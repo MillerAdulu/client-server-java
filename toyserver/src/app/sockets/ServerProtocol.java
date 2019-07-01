@@ -92,7 +92,6 @@ public class ServerProtocol {
     }
 
     public ToyMessage retrieveToyMessage() throws IOException, ClassNotFoundException {
-        System.out.println("Batch 3 Received");
         InputStream inputStream = socket.getInputStream();
 
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
@@ -101,7 +100,7 @@ public class ServerProtocol {
     }
 
     public void toyMessagePrint(ToyMessage targetMessage) {
-
+        System.out.println("Toy Message Received");
         System.out.println("::Toy Message Start::");
 
         System.out.println(targetMessage);
