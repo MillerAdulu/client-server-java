@@ -1,10 +1,12 @@
 package app;
 
-import java.io.*;
 import java.net.Socket;
 
 import app.models.Batch1;
+import app.models.Batch2;
+import app.models.Batch3;
 import app.models.Message;
+import app.models.ToyMessage;
 import app.sockets.ClientProtocol;
 
 public class ToyUI extends javax.swing.JFrame {
@@ -12,9 +14,6 @@ public class ToyUI extends javax.swing.JFrame {
 
         private static Socket sessionSocket;
         private static ClientProtocol clientProtocol = new ClientProtocol();
-
-        private String toyCode, toyName, description, price, dateOfManufacture, batchNumber, companyName, street, zip,
-                        country;
 
         public static Socket getSessionSocket() {
                 return ToyUI.sessionSocket;
@@ -265,22 +264,42 @@ public class ToyUI extends javax.swing.JFrame {
                 pack();
         }// </editor-fold>//GEN-END:initComponents
 
-        private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
+        private Batch1 getBatch1() {
                 Batch1 batch1 = new Batch1();
+
                 batch1.setToyName(jTextField2.getText());
                 batch1.setToyCode(jTextField1.getText());
 
+                return batch1;
+        }
+
+        private Batch2 getBatch2() {
+                Batch2 batch2 = new Batch2();
+
+                batch2.setBatchNumber(Integer.parseInt(jTextField6.getText()));
+                batch2.setDateOfManufacture(jTextField5.getText());
+                batch2.setDescription(jTextField3.getText());
+                batch2.setPrice(jTextField4.getText());
+
+                return batch2;
+        }
+
+        private Batch3 getBatch3() {
+                Batch3 batch3 = new Batch3();
+
+                batch3.setCompany(jTextField7.getText());
+                batch3.setCountry(jTextField10.getText());
+                batch3.setStreetAddress(jTextField8.getText());
+                batch3.setZipCode(jTextField9.getText());
+
+                return batch3;
+        }
+
+        private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton2ActionPerformed
+
                 try {
-
-                        OutputStream outputStream = sessionSocket.getOutputStream();
-
-                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-                        objectOutputStream.writeObject(batch1);
-
-                        Message msg = clientProtocol.retrieveMessage();
-
-                        setLabel(msg.getMessage());
-
+                        ClientProtocol.socket = sessionSocket;
+                        clientProtocol.sendBatch1(getBatch1());
                 } catch (Exception ex) {
                         ex.printStackTrace();
                 }
@@ -288,59 +307,35 @@ public class ToyUI extends javax.swing.JFrame {
         }// GEN-LAST:event_jButton2ActionPerformed
 
         private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton3ActionPerformed
-                // TODO add your handling code here:
+                try {
+                        ClientProtocol.socket = sessionSocket;
+                        clientProtocol.sendBatch2(getBatch2());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
         }// GEN-LAST:event_jButton3ActionPerformed
 
         private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton4ActionPerformed
-                // TODO add your handling code here:
+                try {
+                        ClientProtocol.socket = sessionSocket;
+                        clientProtocol.sendBatch3(getBatch3());
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
         }// GEN-LAST:event_jButton4ActionPerformed
 
         private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
-                toyCode = jTextField1.getText();
-                toyName = jTextField2.getText();
-                description = jTextField3.getText();
-                price = jTextField4.getText();
-                dateOfManufacture = jTextField5.getText();
-                batchNumber = jTextField6.getText();
-                companyName = jTextField7.getText();
-                street = jTextField8.getText();
-                zip = jTextField9.getText();
-                country = jTextField10.getText();
+                ToyMessage toyMessage = new ToyMessage();
+
+                toyMessage.setBatch1(getBatch1());
+                toyMessage.setBatch2(getBatch2());
+                toyMessage.setBatch3(getBatch3());
 
                 try {
-                        try ( // need host and port, we want to connect to the ServerSocket at port 7777
-                                        Socket socket = new Socket("localhost", 7777)) {
-                                System.out.println("Connected!");
-
-                                OutputStream outputStream = socket.getOutputStream();
-
-                                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-
-                                // ToyMessage newToy = new ToyMessage();
-                                // ToyManufacturer manufacturer = new ToyManufacturer();
-
-                                // newToy.setBatchNumber(Integer.parseInt(batchNumber));
-                                // newToy.setDescription(description);
-                                // newToy.setPrice(price);
-                                // newToy.setToyCode(toyCode);
-                                // newToy.setToyName(toyName);
-
-                                // manufacturer.setCompany(companyName);
-                                // manufacturer.setCountry(country);
-                                // manufacturer.setStreetAddress(street);
-                                // manufacturer.setZipCode(zip);
-
-                                // newToy.setManufacturer(manufacturer);
-
-                                // System.out.println("Sending messages to the ServerSocket");
-                                // objectOutputStream.writeObject(newToy);
-
-                                System.out.println("Closing socket and terminating program.");
-
-                        }
+                        ClientProtocol.socket = sessionSocket;
+                        clientProtocol.sendToyMessage(toyMessage);
                 } catch (Exception ex) {
-                        System.out.println("Stuff happened");
-                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
                 }
         }// GEN-LAST:event_jButton1ActionPerformed
 

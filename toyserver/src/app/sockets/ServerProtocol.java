@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,7 +14,7 @@ import app.models.Batch3;
 import app.models.ToyMessage;
 import app.models.Message;
 
-public class SocketProtocol {
+public class ServerProtocol {
     public static Socket socket;
 
     public Socket returnProtocol(ServerSocket socketServer) throws IOException {
@@ -41,7 +40,6 @@ public class SocketProtocol {
     }
 
     public Batch2 retrieveBatch2() throws IOException, ClassNotFoundException {
-        System.out.println("Batch 2 Received");
         InputStream inputStream = socket.getInputStream();
 
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
@@ -50,7 +48,7 @@ public class SocketProtocol {
     }
 
     public void batch2Print(Batch2 targetMessage) {
-
+        System.out.println("Batch 2 Received");
         System.out.println("::Toy Message Start::");
 
         System.out.println(targetMessage);
@@ -59,7 +57,6 @@ public class SocketProtocol {
     }
 
     public Batch3 retrieveBatch3() throws IOException, ClassNotFoundException {
-        System.out.println("Batch 3 Received");
         InputStream inputStream = socket.getInputStream();
 
         ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
@@ -68,12 +65,30 @@ public class SocketProtocol {
     }
 
     public void batch3Print(Batch3 targetMessage) {
-
+        System.out.println("Batch 3 Received");
         System.out.println("::Toy Message Start::");
 
         System.out.println(targetMessage);
 
         System.out.println("::Toy Message End::");
+    }
+
+    public Message retrieveThanksMessage() throws IOException, ClassNotFoundException {
+        System.out.println("Thanks message received");
+        InputStream inputStream = socket.getInputStream();
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+        return (Message) objectInputStream.readObject();
+    }
+
+    public void thanksMessagePrint(Message targetMessage) {
+        System.out.println("Thanks Received");
+        System.out.println("::Thanks Message Start::");
+
+        System.out.println(targetMessage.getMessage());
+
+        System.out.println("::Thanks Message End::");
     }
 
     public ToyMessage retrieveToyMessage() throws IOException, ClassNotFoundException {
